@@ -47,49 +47,111 @@ public class DSAms2 {
         Map<String, Map<String, String>> sortedStockInfo = sortStockInfo(stockInfo);
         printStockInfo(sortedStockInfo);
 
-        boolean searchActive = true;
-        while (searchActive) {
-            // Prompt the user for the search criteria
-            System.out.println("\nWhat would you like to search for?");
-            System.out.println("1. Brand");
-            System.out.println("2. Engine Number");
-            System.out.println("3. Label Status");
-            System.out.println("4. Purchase Status");
-            System.out.println("5. Exit");
+        int choice = 0;
+        while (choice != 4) {
+            System.out.println("\n1. Add new stock");
+            System.out.println("2. Delete incorrect stock");
+            System.out.println("3. Search stocks");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            choice = intScanner.nextInt();
 
-            Scanner srchscanner = new Scanner(System.in);
-            int searchChoice = srchscanner.nextInt();
-
-            switch (searchChoice) {
+            switch (choice) {
                 case 1:
-                    // Search by brand
-                    System.out.print("Enter the brand to search for: ");
-                    String searchBrand = strScanner.next();
-                    searchStockByBrand(sortedStockInfo, searchBrand);
+                    // Add new stock
+                    System.out.print("Enter brand for new stock: ");
+                    String brand = strScanner.nextLine();
+                    System.out.print("Enter engine number for new stock: ");
+                    String engineNumber = strScanner.nextLine();
+                    System.out.print("Enter label status of new stock: ");
+                    String labelStatus = strScanner.nextLine();
+                    System.out.print("Enter purchase status of new stock: ");
+                    String purchaseStatus = strScanner.nextLine();
+
+                    Map<String, String> stockDetails = new HashMap<>();
+                    stockDetails.put("brand", brand);
+                    stockDetails.put("engineNumber", engineNumber);
+                    stockDetails.put("labelStatus", labelStatus);
+                    stockDetails.put("purchaseStatus", purchaseStatus);
+
+                    stockInfo.put(brand + engineNumber, stockDetails);
+
+                    // Sort stockInfo map according to brand
+                    sortedStockInfo = sortStockInfo(stockInfo);
+                    System.out.println("\nUpdated Sorted Values according to Brand");
+                    printStockInfo(sortedStockInfo);
                     break;
+
                 case 2:
-                    // Search by engine number
-                    System.out.print("Enter the engine number to search for: ");
-                    String searchEngineNumber = strScanner.next();
-                    searchStockByEngineNumber(sortedStockInfo, searchEngineNumber);
+                    // Delete incorrect stock
+                    System.out.print("Enter brand of stock to delete: ");
+                    String deleteBrand = strScanner.next();
+                    System.out.print("Enter engine number of stock to delete: ");
+                    String deleteEngineNumber = strScanner.next();
+
+                    stockInfo.remove(deleteBrand + deleteEngineNumber);
+
+                    // Sort stockInfo map according to brand
+                    sortedStockInfo = sortStockInfo(stockInfo);
+                    System.out.println("\nUpdated Sorted Values according to Brand");
+                    printStockInfo(sortedStockInfo);
                     break;
+
                 case 3:
-                    // Search by label status
-                    System.out.print("Enter the label status to search for: ");
-                    String searchLabelStatus = strScanner.next();
-                    searchStockByLabelStatus(sortedStockInfo, searchLabelStatus);
+                    boolean searchActive = true;
+                    while (searchActive) {
+                        // Prompt the user for the search criteria
+                        System.out.println("\nWhat would you like to search for?");
+                        System.out.println("1. Brand");
+                        System.out.println("2. Engine Number");
+                        System.out.println("3. Label Status");
+                        System.out.println("4. Purchase Status");
+                        System.out.println("5. Exit");
+
+                        Scanner srchscanner = new Scanner(System.in);
+                        int searchChoice = srchscanner.nextInt();
+
+                        switch (searchChoice) {
+                            case 1:
+                                // Search by brand
+                                System.out.print("Enter the brand to search for: ");
+                                String searchBrand = strScanner.next();
+                                searchStockByBrand(sortedStockInfo, searchBrand);
+                                break;
+                            case 2:
+                                // Search by engine number
+                                System.out.print("Enter the engine number to search for: ");
+                                String searchEngineNumber = strScanner.next();
+                                searchStockByEngineNumber(sortedStockInfo, searchEngineNumber);
+                                break;
+                            case 3:
+                                // Search by label status
+                                System.out.print("Enter the label status to search for: ");
+                                String searchLabelStatus = strScanner.next();
+                                searchStockByLabelStatus(sortedStockInfo, searchLabelStatus);
+                                break;
+                            case 4:
+                                // Search by purchase status
+                                System.out.print("Enter the purchase status to search for: ");
+                                String searchPurchaseStatus = strScanner.next();
+                                searchStockByPurchaseStatus(sortedStockInfo, searchPurchaseStatus);
+                                break;
+                            case 5:
+                                // Exit the search mode
+                                searchActive = false;
+                                System.out.println("Exiting search mode.");
+                                break;
+                            default:
+                                System.out.println("Invalid choice");
+                        }
+                    }
                     break;
+
                 case 4:
-                    // Search by purchase status
-                    System.out.print("Enter the purchase status to search for: ");
-                    String searchPurchaseStatus = strScanner.next();
-                    searchStockByPurchaseStatus(sortedStockInfo, searchPurchaseStatus);
+                    // Exit the program
+                    System.out.println("Exiting program.");
                     break;
-                case 5:
-                    // Exit the search mode
-                    searchActive = false;
-                    System.out.println("Exiting search mode.");
-                    break;
+
                 default:
                     System.out.println("Invalid choice");
             }
@@ -106,21 +168,21 @@ public class DSAms2 {
 
     // Method for sorting stock information according to brand
     private static Map<String, Map<String, String>> sortStockInfo(Map<String, Map<String, String>> stockInfo) {
-    Map<String, Map<String, String>> sortedStockInfo = new TreeMap<>(new Comparator<String>() {
-        @Override
-        public int compare(String o1, String o2) {
-            Map<String, String> stock1 = stockInfo.get(o1);
-            Map<String, String> stock2 = stockInfo.get(o2);
-            int brandCompare = stock1.get("brand").compareTo(stock2.get("brand"));
-            if (brandCompare == 0) {
-                return stock1.get("engineNumber").compareTo(stock2.get("engineNumber"));
+        Map<String, Map<String, String>> sortedStockInfo = new TreeMap<>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                Map<String, String> stock1 = stockInfo.get(o1);
+                Map<String, String> stock2 = stockInfo.get(o2);
+                int brandCompare = stock1.get("brand").compareTo(stock2.get("brand"));
+                if (brandCompare == 0) {
+                    return stock1.get("engineNumber").compareTo(stock2.get("engineNumber"));
+                }
+                return brandCompare;
             }
-            return brandCompare;
-        }
-    });
-    sortedStockInfo.putAll(stockInfo);
-    return sortedStockInfo;
-}
+        });
+        sortedStockInfo.putAll(stockInfo);
+        return sortedStockInfo;
+    }
 
     // Method for searching stock information by brand
     private static void searchStockByBrand(Map<String, Map<String, String>> stockInfo, String searchBrand) {
@@ -133,7 +195,7 @@ public class DSAms2 {
             }
         }
         if (!found) {
-            System.out.println("No stocks found with brand " + searchBrand);
+            System.out.println("No stocks found with the brand: " + searchBrand);
         }
     }
 
@@ -148,7 +210,7 @@ public class DSAms2 {
             }
         }
         if (!found) {
-            System.out.println("No stocks found with engine number " + searchEngineNumber);
+            System.out.println("No stocks found with the engine number: " + searchEngineNumber);
         }
     }
 
@@ -163,7 +225,7 @@ public class DSAms2 {
             }
         }
         if (!found) {
-            System.out.println("No stocks found with label status " + searchLabelStatus);
+            System.out.println("No stocks found with the label status: " + searchLabelStatus);
         }
     }
 
@@ -178,7 +240,7 @@ public class DSAms2 {
             }
         }
         if (!found) {
-            System.out.println("No stocks found with purchase status " + searchPurchaseStatus);
+            System.out.println("No stocks found with the purchase status: " + searchPurchaseStatus);
         }
     }
 }
